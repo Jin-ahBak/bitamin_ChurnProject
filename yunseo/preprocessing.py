@@ -1,38 +1,38 @@
 import pandas as pd
 import numpy as np
 #%%
-aum_m7 = pd.read_csv('../rawdata/aum_train/aum_m7.csv')
-aum_m8 = pd.read_csv('../rawdata/aum_train/aum_m8.csv')
-aum_m9 = pd.read_csv('../rawdata/aum_train/aum_m9.csv')
-aum_m10 = pd.read_csv('../rawdata/aum_train/aum_m10.csv')
-aum_m11 = pd.read_csv('../rawdata/aum_train/aum_m11.csv')
-aum_m12 = pd.read_csv('../rawdata/aum_train/aum_m12.csv')
+aum_m7 = pd.read_csv('../data/rawdata/aum_train/aum_m7.csv')
+aum_m8 = pd.read_csv('../data/rawdata/aum_train/aum_m8.csv')
+aum_m9 = pd.read_csv('../data/rawdata/aum_train/aum_m9.csv')
+aum_m10 = pd.read_csv('../data/rawdata/aum_train/aum_m10.csv')
+aum_m11 = pd.read_csv('../data/rawdata/aum_train/aum_m11.csv')
+aum_m12 = pd.read_csv('../data/rawdata/aum_train/aum_m12.csv')
 
-behavior_m7 = pd.read_csv('../rawdata/behavior_train/behavior_m7.csv')
-behavior_m8 = pd.read_csv('../rawdata/behavior_train/behavior_m8.csv')
-behavior_m9 = pd.read_csv('../rawdata/behavior_train/behavior_m9.csv')
-behavior_m10 = pd.read_csv('../rawdata/behavior_train/behavior_m10.csv')
-behavior_m11 = pd.read_csv('../rawdata/behavior_train/behavior_m11.csv')
-behavior_m12 = pd.read_csv('../rawdata/behavior_train/behavior_m12.csv')
+behavior_m7 = pd.read_csv('../data/rawdata/behavior_train/behavior_m7.csv')
+behavior_m8 = pd.read_csv('../data/rawdata/behavior_train/behavior_m8.csv')
+behavior_m9 = pd.read_csv('../data/rawdata/behavior_train/behavior_m9.csv')
+behavior_m10 = pd.read_csv('../data/rawdata/behavior_train/behavior_m10.csv')
+behavior_m11 = pd.read_csv('../data/rawdata/behavior_train/behavior_m11.csv')
+behavior_m12 = pd.read_csv('../data/rawdata/behavior_train/behavior_m12.csv')
 
-big_event_Q3 = pd.read_csv('../rawdata/big_event_train/big_event_Q3.csv')
-big_event_Q4 = pd.read_csv('../rawdata/big_event_train/big_event_Q4.csv')
+big_event_Q3 = pd.read_csv('../data/rawdata/big_event_train/big_event_Q3.csv')
+big_event_Q4 = pd.read_csv('../data/rawdata/big_event_train/big_event_Q4.csv')
 
-cunkuan_m7 = pd.read_csv('../rawdata/cunkuan_train/cunkuan_m7.csv')
-cunkuan_m8 = pd.read_csv('../rawdata/cunkuan_train/cunkuan_m8.csv')
-cunkuan_m9 = pd.read_csv('../rawdata/cunkuan_train/cunkuan_m9.csv')
-cunkuan_m10 = pd.read_csv('../rawdata/cunkuan_train/cunkuan_m10.csv')
-cunkuan_m11 = pd.read_csv('../rawdata/cunkuan_train/cunkuan_m11.csv')
-cunkuan_m12 = pd.read_csv('../rawdata/cunkuan_train/cunkuan_m12.csv')
+cunkuan_m7 = pd.read_csv('../data/rawdata/cunkuan_train/cunkuan_m7.csv')
+cunkuan_m8 = pd.read_csv('../data/rawdata/cunkuan_train/cunkuan_m8.csv')
+cunkuan_m9 = pd.read_csv('../data/rawdata/cunkuan_train/cunkuan_m9.csv')
+cunkuan_m10 = pd.read_csv('../data/rawdata/cunkuan_train/cunkuan_m10.csv')
+cunkuan_m11 = pd.read_csv('../data/rawdata/cunkuan_train/cunkuan_m11.csv')
+cunkuan_m12 = pd.read_csv('../data/rawdata/cunkuan_train/cunkuan_m12.csv')
 
-cust_avli_Q3 = pd.read_csv('../rawdata/cust_avil_train/cust_avli_Q3.csv')
-cust_avli_Q4 = pd.read_csv('../rawdata/cust_avil_train/cust_avli_Q4.csv')
+cust_avli_Q3 = pd.read_csv('../data/rawdata/cust_avil_train/cust_avli_Q3.csv')
+cust_avli_Q4 = pd.read_csv('../data/rawdata/cust_avil_train/cust_avli_Q4.csv')
 
-cust_info_q3 = pd.read_csv('../rawdata/cust_info_train/cust_info_q3.csv')
-cust_info_q4 = pd.read_csv('../rawdata/cust_info_train/cust_info_q4.csv')
+cust_info_q3 = pd.read_csv('../data/rawdata/cust_info_train/cust_info_q3.csv')
+cust_info_q4 = pd.read_csv('../data/rawdata/cust_info_train/cust_info_q4.csv')
 
-y_Q3_3 = pd.read_csv('../rawdata/train_label/y_Q3_3.csv')
-y_Q4_3 = pd.read_csv('../rawdata/train_label/y_Q4_3.csv')
+y_Q3_3 = pd.read_csv('../data/rawdata/train_label/y_Q3_3.csv')
+y_Q4_3 = pd.read_csv('../data/rawdata/train_label/y_Q4_3.csv')
 #%%
 
 # print data shape
