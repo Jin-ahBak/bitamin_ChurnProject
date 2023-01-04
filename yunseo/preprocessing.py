@@ -1,5 +1,8 @@
 import pandas as pd
 import numpy as np
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
 #%%
 aum_m7 = pd.read_csv('../data/rawdata/aum_train/aum_m7.csv')
 aum_m8 = pd.read_csv('../data/rawdata/aum_train/aum_m8.csv')
@@ -71,6 +74,8 @@ print("y_Q4_3 shape: ", y_Q4_3.shape)
 
 #%%
 # y train data
+y_Q3_3.rename(columns={'cust_no':'cust_no', 'label':'label_Q3'}, inplace=True)
+y_Q4_3.rename(columns={'cust_no':'cust_no', 'label':'label_Q4'}, inplace=True)
 y_train = pd.merge(y_Q3_3, y_Q4_3, on='cust_no', how='outer')
 y_train_idx = y_train.cust_no
 
@@ -212,11 +217,12 @@ del cust_info_q3, cust_info_q4
 #%%
 print(aum_m.shape)
 print(behavior_m.shape)
-print(cunkuan_m.shape)
+print(cunkuan_m.shape)   # 82896
 print(big_event_Q.shape)
 print(cust_info_q.shape)
 
 #%%
+
 def check_missing(dat):
     '''Print missing values in each column of the dat
     @Param df dat: input data frame
@@ -263,7 +269,35 @@ big_event_Q.shape
 # cust_info_q
 check_missing(cust_info_q)
 
+cust_info_q.drop(columns = ['I9_Q3', 'I10_Q3', 'I13_Q3', 'I14_Q3',
+                            'I9_Q4', 'I10_Q4', 'I13_Q4', 'I14_Q4'], inplace = True)
 
+#cust_info_q[['I1_Q3', 'I1_Q4']][(cust_info_q.I1_Q3.isna()) & (cust_info_q.I1_Q4.isna())].isna().sum()
+cust_info_q.drop(columns = ['I1_Q3', 'I2_Q3'], inplace = True)
+cust_info_q.rename(columns = {'I1_Q4':'I1', 'I2_Q4':'I2'}, inplace = True)
+cust_info_q.drop(columns = ['I8_Q3', 'I8_Q4'], inplace = True)
+cust_info_q.drop(columns = ['I12_Q3', 'I12_Q4'], inplace = True)
+
+cust_info_q.isna().sum()
+
+# I3_Q[3,4,5,6,7,11,15,16,17,18,19,20]의 결측을 I3_Q4로 채움
+cust_info_q.I3_Q3.fillna(cust_info_q.I3_Q4, inplace=True)
+cust_info_q.I4_Q3.fillna(cust_info_q.I4_Q4, inplace=True)
+cust_info_q.I5_Q3.fillna(cust_info_q.I5_Q4, inplace=True)
+cust_info_q.I6_Q3.fillna(cust_info_q.I6_Q4, inplace=True)
+cust_info_q.I7_Q3.fillna(cust_info_q.I7_Q4, inplace=True)
+cust_info_q.I11_Q3.fillna(cust_info_q.I11_Q4, inplace=True)
+cust_info_q.I15_Q3.fillna(cust_info_q.I15_Q4, inplace=True)
+cust_info_q.I16_Q3.fillna(cust_info_q.I16_Q4, inplace=True)
+cust_info_q.I17_Q3.fillna(cust_info_q.I17_Q4, inplace=True)
+cust_info_q.I18_Q3.fillna(cust_info_q.I18_Q4, inplace=True)
+cust_info_q.I19_Q3.fillna(cust_info_q.I19_Q4, inplace=True)
+cust_info_q.I20_Q3.fillna(cust_info_q.I20_Q4, inplace=True)
+
+
+# I5_Q3, I5_Q4의 결측 '무직'으로 대체
+cust_info_q.I5_Q3.fillna('무직', inplace=True)
+cust_info_q.I5_Q4.fillna('무직', inplace=True)
 
 #%%
 
@@ -273,4 +307,44 @@ print(cunkuan_m.shape)
 print(big_event_Q.shape)
 print(cust_info_q.shape)
 
+#%%
 
+# aum_m, behavior_m, cunkuan_m, big_event_Q, cust_info_q, y_train을 합침
+train = pd.merge(aum_m, behavior_m, on='cust_no', how='left')
+train = pd.merge(train, cunkuan_m, on='cust_no', how='left')
+train = pd.merge(train, big_event_Q, on='cust_no', how='left')
+train = pd.merge(train, cust_info_q, on='cust_no', how='left')
+train = pd.merge(train, y_train, on='cust_no', how='left')
+
+# C1이 결측인 행 제거
+train.dropna(subset=['C1_m11'], inplace=True)
+
+# 결측 확인
+check_missing(train)
+
+# 'E1_Q4','E2_Q4' datetime으로 변환
+train[['E1_Q4', 'E2_Q4', 'E3_Q4', 'E6_Q4', 'E10_Q4']] = train[['E1_Q4', 'E2_Q4', 'E3_Q4', 'E6_Q4', 'E10_Q4']].apply(pd.to_datetime)
+
+#
+# pd.datetime('2019-12-31')
+
+def date_diff(x):
+    return (pd.datetime(2019,12,31) - x).days # 4분기 기준으로 날짜 데이터 전처리
+
+train.E1_Q4 = train.E1_Q4.apply(date_diff)
+train.E2_Q4 = train.E2_Q4.apply(date_diff)
+train.E3_Q4 = train.E3_Q4.apply(date_diff)
+train.E6_Q4 = train.E6_Q4.apply(date_diff)
+train.E10_Q4 = train.E10_Q4.apply(date_diff)
+
+# E1_Q4, E2_Q4, E3_Q4, E6_Q4, E10_Q4 결측 max값으로 대체
+train.E1_Q4.fillna(train.E1_Q4.max(), inplace=True)
+train.E2_Q4.fillna(train.E2_Q4.max(), inplace=True)
+train.E3_Q4.fillna(train.E3_Q4.max(), inplace=True)
+train.E6_Q4.fillna(train.E6_Q4.max(), inplace=True)
+train.E10_Q4.fillna(train.E10_Q4.max(), inplace=True)
+
+# int형 변환
+train[['E1_Q4', 'E2_Q4', 'E3_Q4', 'E6_Q4', 'E10_Q4']] = train[['E1_Q4', 'E2_Q4', 'E3_Q4', 'E6_Q4', 'E10_Q4']].astype(int)
+
+train.isna().sum()
