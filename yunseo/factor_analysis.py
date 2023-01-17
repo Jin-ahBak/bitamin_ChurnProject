@@ -11,6 +11,7 @@ from sklearn.model_selection import cross_val_score
 
 #%%
 # load data
+
 data = pd.read_csv('../data/preprocessed_data/train_data.csv')
 x_data = data.drop(columns = ['cust_no', 'label'])
 x_data.columns
