@@ -31,7 +31,7 @@ types = x_valid.dtypes
 categorical_columns = []
 categorical_dims = {}
 for col in x_train.columns:
-    if types[col] == 'object' or nunique[col] < 10:
+    if types[col] == 'object' or nunique[col] < 3:
         print(col, x_train[col].nunique())
         l_enc = LabelEncoder()
         x_train[col] = l_enc.fit_transform(x_train[col].values)
@@ -69,7 +69,13 @@ print(y_train.shape, y_valid.shape)
 
 clf = TabNetClassifier(cat_idxs = cat_idxs,
                         cat_dims = cat_dims,
-                        cat_emb_dim = 20,
+                        # optimizer_fn=torch.optim.Adam,
+                        scheduler_params={"step_size":10, "gamma":0.9},
+                        scheduler_fn=torch.optim.lr_scheduler.StepLR,
+                        mask_type='sparsemax',
+                        cat_emb_dim = 1,
+                        # optimizer_params = dict(lr=2e-4),
+                        # gamma = 0.7
                         # mask_type = 'entmax', # 'sparsemax', 'entmax'
                         # verbose = 5,
                        )
@@ -83,8 +89,8 @@ clf.fit(
     eval_name=['train', 'valid'],
     eval_metric=['accuracy'],
     max_epochs=100,
-    patience=20,
-    batch_size=32,
+    patience=5,
+    batch_size=1024,
     virtual_batch_size=64,
     num_workers=0,
     weights=1,
@@ -92,6 +98,13 @@ clf.fit(
 )
 end_time = time.time()
 print("time :", end_time - start)
+
+
+
+y_pred = clf.predict(x_train)
+print('Accuracy: {:.2f}'.format(accuracy_score(y_train, y_pred)))
+print(confusion_matrix(y_train, y_pred))
+print(classification_report(y_train, y_pred))
 
 y_pred = clf.predict(x_valid)
 print('Accuracy: {:.2f}'.format(accuracy_score(y_valid, y_pred)))
@@ -131,3 +144,56 @@ print(classification_report(y_valid, y_pred))
 #     eval_metric=['auc'],
 #     from_unsupervised=unsupervised_model
 # )
+
+
+
+#%%
+# result
+# 1. cat_emb_dim = 20, default
+# time : 0.0
+# 발산
+# train_Accuracy: 0.5 , valid_Accuracy: 0.5
+
+# 2. cat_emb_dim = 20, lr = 2e-5
+# 1의 결과가 발산하는 것을 보았을 때, lr이 너무 커서 그런가 싶어 lr을 2e-5로 낮춰봄
+# 너무 느림
+# time : 0.0
+# train_Accuracy:  , valid_Accuracy:
+
+# 3. cat_emb_dim = 10, lr - 2e-4, batch_size = 256, virtual_batch_size = 64, gamma = 0.7
+# 구림
+
+# 4. default, batch_size = 1024, virtual_batch_size = 64
+# time : 0.0
+# train_Acc/f1:  0.63, 0.3, valid_Acc/f1:  0.64, 0.3
+
+# 5. default, batch_size = 1024, virtual_batch_size = 64
+#    scheduler_params={"step_size":10, "gamma":0.9},# how to use learning rate scheduler
+#    scheduler_fn=torch.optim.lr_scheduler.StepLR,
+#    mask_type='sparsemax' # This will be overwritten if using pretrain model
+#    발산
+# loss = 0.9
+# train_Acc/f1: , valid_Acc/f1:
+
+# 6. default, batch_size = 1024, virtual_batch_size = 64, cat_emb_dim = 10
+#    scheduler_params={"step_size":10, "gamma":0.9},# how to use learning rate scheduler
+#    scheduler_fn=torch.optim.lr_scheduler.StepLR,
+#    mask_type='sparsemax' # This will be overwritten if using pretrain model
+# train_Acc/f1:  0.5 , valid_Acc/f1: 0.5
+
+# 7. category value 기준을 3으로 낮춤. (진짜 cat 변수만 들어가도록)
+#    batch_size = 1024, virtual_batch_size = 64, cat_emb_dim = 10
+#    scheduler_params={"step_size":10, "gamma":0.9},# how to use learning rate scheduler
+#    scheduler_fn=torch.optim.lr_scheduler.StepLR,
+#    mask_type='sparsemax' # This will be overwritten if using pretrain model
+#    일단 성능이 나아짐. -> 연속형 변수를 cat 변수로 넣었어서 성능이 구렸던 것 같음. (당연함...)
+#    train_Acc/f1: 0.63/0.33 , valid_Acc/f1: 0.63/0.33
+
+# 8. 7 + cat_emb_dim = 20
+#    train_Acc/f1: , valid_Acc/f1:
+#    구려서 멈춤
+
+# 9. 7 + cat_emb_dim = 1
+#    train_Acc/f1: 0.57 / 0.48, valid_Acc/f1: 0.57 / 0.48
+
+# -- 일단 tabnet은 여기까지만 하고 다른 모델로 넘어감 --
