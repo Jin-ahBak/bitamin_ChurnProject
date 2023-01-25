@@ -206,3 +206,4 @@ print(confusion_matrix(y_test, y_pred))
 print(classification_report(y_test, y_pred))
 
 # acc : 0.70, f1-score : 0.54
+
