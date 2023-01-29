@@ -19,9 +19,8 @@
 ├── data
 │   ├── rawdata
 │   └── processed_data
-├── reference
-│   ├── code 
-│   └── data (referece project에서 전처리한 데이터)
+├── main
+│   └── preprocessing.ipynb  # 데이터 전처리 코드
 │ 
 ├── sumin
 │   
